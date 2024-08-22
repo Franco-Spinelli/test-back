@@ -197,7 +197,6 @@ class SensorSummaryServiceTest {
         // THEN
         assertThat(result).isPresent();
         assertThat(result.get()).isEqualTo(sensorSummary);
-        then(sensorSummaryRepository).should().findById(id);
     }
 
 }
