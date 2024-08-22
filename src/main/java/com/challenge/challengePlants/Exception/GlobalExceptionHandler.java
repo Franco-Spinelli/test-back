@@ -20,5 +20,10 @@ public class GlobalExceptionHandler {
         errorDetails.put("message", ex.getMessage());
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
-
+    @ExceptionHandler(SensorCountMismatchException.class)
+    public ResponseEntity<?> handleProductStockException(SensorCountMismatchException ex, WebRequest request) {
+        Map<String, String> errorDetails = new HashMap<>();
+        errorDetails.put("message", ex.getMessage());
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
 }

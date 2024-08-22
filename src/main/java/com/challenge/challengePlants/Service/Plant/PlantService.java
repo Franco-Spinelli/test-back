@@ -8,8 +8,9 @@ import java.util.Optional;
 
 public interface PlantService {
     Plant savePlant(Plant plant);
-    Plant createPlant(PlantDTO plantDTO);
-    Plant updatePlant(PlantDTO plantDTO);
+    PlantDTO createPlant(PlantDTO plantDTO);
+    PlantDTO updatePlant(PlantDTO plantDTO);
     void deletePlant(Long id);
     Optional<Plant> findById(Long id);
+    PlantDTO plantToPlantDTO(Plant plant);
 }

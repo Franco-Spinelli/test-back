@@ -22,17 +22,18 @@ public class PlantServiceImpl implements PlantService {
     }
 
     @Override
-    public Plant createPlant(PlantDTO plantDTO) {
+    public PlantDTO createPlant(PlantDTO plantDTO) {
         User user = userService.getUserAuthenticated().orElseThrow(() -> new IllegalStateException("Unauthenticated user"));
-        return plantRepository.save(Plant.builder()
+       Plant newPlant = plantRepository.save(Plant.builder()
                         .country(plantDTO.getCountry())
                         .name(plantDTO.getName())
                         .user(user)
                 .build());
+       return plantToPlantDTO(newPlant);
     }
 
     @Override
-    public Plant updatePlant(PlantDTO plantDTO) {
+    public PlantDTO updatePlant(PlantDTO plantDTO) {
         Optional<Plant> optionalPlant = findById(plantDTO.getId());
         if(optionalPlant.isPresent()){
             Plant existingPlant = optionalPlant.get();
@@ -42,7 +43,7 @@ public class PlantServiceImpl implements PlantService {
             if (plantDTO.getCountry() != null) {
                 existingPlant.setCountry(plantDTO.getCountry());
             }
-            return plantRepository.save(existingPlant);
+            return plantToPlantDTO(plantRepository.save(existingPlant));
         }else {
             throw new EntityNotFoundException("Plant not found");
         }
@@ -60,5 +61,14 @@ public class PlantServiceImpl implements PlantService {
     @Override
     public Optional<Plant> findById(Long id) {
         return plantRepository.findById(id);
+    }
+
+    @Override
+    public PlantDTO plantToPlantDTO(Plant plant) {
+        return PlantDTO.builder()
+                .id(plant.getId())
+                .country(plant.getCountry())
+                .name(plant.getName())
+                .build();
     }
 }
