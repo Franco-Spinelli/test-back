@@ -1,5 +1,6 @@
 package com.challenge.challengePlants.Auth;
 
+import com.challenge.challengePlants.Exception.InvalidPasswordLengthException;
 import com.challenge.challengePlants.JWT.JwtService;
 import com.challenge.challengePlants.Model.User.Role;
 import com.challenge.challengePlants.Model.User.User;
@@ -29,16 +30,21 @@ public class AuthService {
     }
 
     public AuthResponse register(RegisterRequest request) {
-        User user = User.builder()
-                .username(request.getUsername())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .firstname(request.getFirstname())
-                .lastname(request.getLastname())
-                .role(Role.USER)
-                .build();
-        userRepository.save(user);
-        return AuthResponse.builder()
-                .token(jwtService.getToken(user))
-                .build();
+        if(request.getPassword().length()>8){
+            User user = User.builder()
+                    .username(request.getUsername())
+                    .password(passwordEncoder.encode(request.getPassword()))
+                    .firstname(request.getFirstname())
+                    .lastname(request.getLastname())
+                    .role(Role.USER)
+                    .build();
+            userRepository.save(user);
+            return AuthResponse.builder()
+                    .token(jwtService.getToken(user))
+                    .build();
+        }else {
+            throw new InvalidPasswordLengthException("Password must be at least 8 characters long");
+        }
+
     }
 }
