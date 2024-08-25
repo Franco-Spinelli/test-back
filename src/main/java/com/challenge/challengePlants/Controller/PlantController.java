@@ -14,6 +14,10 @@ import java.util.Map;
 @RequestMapping("/api/plant")
 public class PlantController {
     private PlantService plantService;
+    @GetMapping("/get-plants")
+    public ResponseEntity<?> getPlants(){
+        return ResponseEntity.ok(plantService.getPlantsDTO());
+    }
     @PostMapping("/add-plant")
     public ResponseEntity<?> addPlant(@RequestBody PlantDTO plantDTO){
         return ResponseEntity.ok( plantService.createPlant(plantDTO));

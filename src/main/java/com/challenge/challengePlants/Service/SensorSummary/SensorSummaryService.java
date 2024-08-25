@@ -5,6 +5,7 @@ import com.challenge.challengePlants.DTO.SensorSummaryDTO;
 import com.challenge.challengePlants.Model.Plant;
 import com.challenge.challengePlants.Model.SensorSummary;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface SensorSummaryService {
@@ -14,4 +15,8 @@ public interface SensorSummaryService {
     void deleteSensorSummary(Long id);
     Optional<SensorSummary> findById(Long id);
     SensorSummaryDTO sensorSummaryToSensorSummaryDTO(SensorSummary sensorSummary);
+    Integer getOkReadings();
+    Integer getMediumAlerts();
+    Integer getRedAlerts();
+    Integer getDisabledSensors();
 }

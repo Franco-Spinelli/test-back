@@ -13,12 +13,28 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/sensor")
 public class SensorController {
     private SensorSummaryService sensorSummaryService;
+    @GetMapping("/get-readings")
+    public ResponseEntity<Integer> getReadings(){
+        return ResponseEntity.ok(sensorSummaryService.getOkReadings());
+    }
+    @GetMapping("/get-medium")
+    public ResponseEntity<Integer> getMedium(){
+        return ResponseEntity.ok(sensorSummaryService.getMediumAlerts());
+    }
+    @GetMapping("/get-red")
+    public ResponseEntity<Integer> getRead(){
+        return ResponseEntity.ok(sensorSummaryService.getRedAlerts());
+    }
+    @GetMapping("/get-disabled")
+    public ResponseEntity<Integer> getDisabled(){
+        return ResponseEntity.ok(sensorSummaryService.getDisabledSensors());
+    }
     @PostMapping("/add-sensor")
-    public ResponseEntity<?> addPlant(@RequestBody SensorSummaryDTO sensorSummaryDTO){
+    public ResponseEntity<?> addSensor(@RequestBody SensorSummaryDTO sensorSummaryDTO){
         return ResponseEntity.ok( sensorSummaryService.createSensorSummary(sensorSummaryDTO));
     }
     @PutMapping("/update-sensor")
-    public ResponseEntity<?> updatePlant(@RequestBody SensorSummaryDTO sensorSummaryDTO){
+    public ResponseEntity<?> updateSensor(@RequestBody SensorSummaryDTO sensorSummaryDTO){
         return ResponseEntity.ok(sensorSummaryService.updateSensorSummary(sensorSummaryDTO));
     }
 }

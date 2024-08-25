@@ -15,19 +15,25 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<?> handleProductStockException(EntityNotFoundException ex, WebRequest request) {
+    public ResponseEntity<?> handleEntityNotFoundException(EntityNotFoundException ex, WebRequest request) {
         Map<String, String> errorDetails = new HashMap<>();
         errorDetails.put("message", ex.getMessage());
         return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
     }
     @ExceptionHandler(SensorCountMismatchException.class)
-    public ResponseEntity<?> handleProductStockException(SensorCountMismatchException ex, WebRequest request) {
+    public ResponseEntity<?> handleSensorCountMismatchException(SensorCountMismatchException ex, WebRequest request) {
         Map<String, String> errorDetails = new HashMap<>();
         errorDetails.put("message", ex.getMessage());
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
     @ExceptionHandler(InvalidPasswordLengthException.class)
-    public ResponseEntity<?> handleProductStockException(InvalidPasswordLengthException ex, WebRequest request) {
+    public ResponseEntity<?> handleInvalidPasswordLengthException(InvalidPasswordLengthException ex, WebRequest request) {
+        Map<String, String> errorDetails = new HashMap<>();
+        errorDetails.put("message", ex.getMessage());
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(SensorTypeAlreadyExistsException.class)
+    public ResponseEntity<?> handleSensorTypeAlreadyExistsException(SensorTypeAlreadyExistsException ex, WebRequest request) {
         Map<String, String> errorDetails = new HashMap<>();
         errorDetails.put("message", ex.getMessage());
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);

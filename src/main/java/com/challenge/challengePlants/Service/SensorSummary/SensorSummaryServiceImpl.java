@@ -2,6 +2,7 @@ package com.challenge.challengePlants.Service.SensorSummary;
 
 import com.challenge.challengePlants.DTO.SensorSummaryDTO;
 import com.challenge.challengePlants.Exception.SensorCountMismatchException;
+import com.challenge.challengePlants.Exception.SensorTypeAlreadyExistsException;
 import com.challenge.challengePlants.Model.Plant;
 import com.challenge.challengePlants.Model.SensorSummary;
 import com.challenge.challengePlants.Repository.SensorSummaryRepository;
@@ -10,6 +11,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -28,16 +30,21 @@ public class SensorSummaryServiceImpl implements SensorSummaryService {
         if(optionalPlant.isPresent()){
             if(checkSensorCount(sensorSummaryDTO)){
                 Plant plant = optionalPlant.get();
-                SensorSummary newSensor = saveSensorSummary(SensorSummary.builder()
-                        .disabledSensors(sensorSummaryDTO.getDisabledSensors())
-                        .totalSensors(sensorSummaryDTO.getTotalSensors())
-                        .type(sensorSummaryDTO.getType())
-                        .plant(plant)
-                        .mediumAlerts(sensorSummaryDTO.getMediumAlerts())
-                        .okReadings(sensorSummaryDTO.getOkReadings())
-                        .redAlerts(sensorSummaryDTO.getRedAlerts())
-                        .build());
-                return sensorSummaryToSensorSummaryDTO(newSensor);
+                if(checkSensorType(sensorSummaryDTO,plant)){
+                    SensorSummary newSensor = saveSensorSummary(SensorSummary.builder()
+                            .disabledSensors(sensorSummaryDTO.getDisabledSensors())
+                            .totalSensors(sensorSummaryDTO.getTotalSensors())
+                            .type(sensorSummaryDTO.getType())
+                            .plant(plant)
+                            .mediumAlerts(sensorSummaryDTO.getMediumAlerts())
+                            .okReadings(sensorSummaryDTO.getOkReadings())
+                            .redAlerts(sensorSummaryDTO.getRedAlerts())
+                            .build());
+                    return sensorSummaryToSensorSummaryDTO(newSensor);
+                }else {
+                    throw new SensorTypeAlreadyExistsException("Sensor " + sensorSummaryDTO.getType().toString() + " type already exists. Please update the existing list.");
+                }
+
             }else {
                 throw new SensorCountMismatchException("Sensor count mismatch: Total sensors do not match the sum of disabled, alert, and reading sensors.");
             }
@@ -108,6 +115,65 @@ public class SensorSummaryServiceImpl implements SensorSummaryService {
                 .type(sensorSummary.getType())
                 .build();
     }
+
+
+    @Override
+    public Integer getOkReadings() {
+        List<Plant> plantList = plantService.getPlants();
+        int alertsCount = 0;
+        for (Plant plant:plantList) {
+            for (SensorSummary sensorSummary:plant.getSensorSummaries()) {
+                alertsCount = alertsCount + sensorSummary.getOkReadings();
+            }
+        }
+        return alertsCount;
+    }
+
+    @Override
+    public Integer getMediumAlerts() {
+        List<Plant> plantList = plantService.getPlants();
+        int readingsCount = 0;
+        for (Plant plant:plantList) {
+            for (SensorSummary sensorSummary:plant.getSensorSummaries()) {
+                readingsCount = readingsCount + sensorSummary.getMediumAlerts();
+            }
+        }
+        return readingsCount;
+    }
+
+    @Override
+    public Integer getRedAlerts() {
+        List<Plant> plantList = plantService.getPlants();
+        int alertsCount = 0;
+        for (Plant plant:plantList) {
+            for (SensorSummary sensorSummary:plant.getSensorSummaries()) {
+                alertsCount = alertsCount + sensorSummary.getRedAlerts();
+            }
+        }
+        return alertsCount;
+    }
+
+    @Override
+    public Integer getDisabledSensors() {
+        List<Plant> plantList = plantService.getPlants();
+        int sensorsCount = 0;
+        for (Plant plant:plantList) {
+            for (SensorSummary sensorSummary:plant.getSensorSummaries()) {
+                sensorsCount = sensorsCount + sensorSummary.getDisabledSensors();
+            }
+        }
+        return sensorsCount;
+    }
+
+    public boolean checkSensorType(SensorSummaryDTO sensorSummaryDTO, Plant plant) {
+            for (SensorSummary sensorSummary:plant.getSensorSummaries()) {
+               if(sensorSummary.getType().equals(sensorSummaryDTO.getType())){
+                   return false;
+               }
+            }
+        return true;
+    }
+
     public boolean checkSensorCount(SensorSummaryDTO sensorSummaryDTO){
         return sensorSummaryDTO.getTotalSensors() == sensorSummaryDTO.getDisabledSensors() + sensorSummaryDTO.getRedAlerts() + sensorSummaryDTO.getMediumAlerts() + sensorSummaryDTO.getOkReadings();
     }
