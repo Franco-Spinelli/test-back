@@ -15,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -78,6 +79,7 @@ class PlantServiceImplTest {
                 .id(null)
                 .name("Mendoza")
                 .country("Argentina")
+                .sensorSummaries(new ArrayList<>())
                 .build();
         given(userService.getUserAuthenticated()).willReturn(Optional.of(user));
         given(plantRepository.save(newPlantWithOutId)).willReturn(plant);

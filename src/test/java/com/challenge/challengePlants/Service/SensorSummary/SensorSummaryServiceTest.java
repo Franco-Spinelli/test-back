@@ -2,6 +2,7 @@ package com.challenge.challengePlants.Service.SensorSummary;
 
 import com.challenge.challengePlants.DTO.SensorSummaryDTO;
 import com.challenge.challengePlants.Exception.SensorCountMismatchException;
+import com.challenge.challengePlants.Exception.SensorTypeAlreadyExistsException;
 import com.challenge.challengePlants.Model.Enums.SensorType;
 import com.challenge.challengePlants.Model.Plant;
 import com.challenge.challengePlants.Model.SensorSummary;
@@ -58,6 +59,7 @@ class SensorSummaryServiceTest {
                 .id(1L)
                 .name("Mendoza")
                 .country("Argentina")
+                .sensorSummaries(new ArrayList<>())
                 .build();
         sensorDTO = SensorSummaryDTO.builder()
                 .id(1L)
@@ -94,13 +96,16 @@ class SensorSummaryServiceTest {
     @Test
     void createSensorSummary() {
         //GIVEN
-        given(plantService.findById(plant.getId())).willReturn(Optional.ofNullable(plant));
-        given(underTest.saveSensorSummary(any(SensorSummary.class))).willReturn(sensorSummary);
+        given(plantService.findById(sensorDTO.getPlant_id())).willReturn(Optional.of(plant));
+        given(sensorSummaryRepository.save(any(SensorSummary.class))).willAnswer(invocation -> invocation.getArgument(0));
+
         //WHEN
-        SensorSummaryDTO sensorSummaryDTO = underTest.createSensorSummary(sensorDTO);
+        SensorSummaryDTO result = underTest.createSensorSummary(sensorDTO);
+
         //THEN
-        assertThat(sensorSummaryDTO).isNotNull();
-        assertThat(underTest.checkSensorCount(sensorDTO)).isTrue();
+        assertThat(result).isNotNull();
+        assertThat(result.getType()).isEqualTo(sensorDTO.getType());
+        assertThat(result.getTotalSensors()).isEqualTo(sensorDTO.getTotalSensors());
     }
     @Test
     void createSensorSummary_whenSensorCountMismatch(){
@@ -126,13 +131,25 @@ class SensorSummaryServiceTest {
     void createSensorSummary_whenPlantNotFound(){
         //GIVEN
         given(plantService.findById(plant.getId())).willReturn(Optional.empty());
-        // WHEN & THEN
+        //WHEN & THEN
         assertThrows(EntityNotFoundException.class, () -> {
             underTest.createSensorSummary(sensorDTO);
         });
 
     }
+    @Test
+    void createSensorSummary_SensorTypeAlreadyExists() {
+            // GIVEN
+            plant.getSensorSummaries().add(sensorSummary);
+            given(plantService.findById(sensorDTO.getPlant_id())).willReturn(Optional.of(plant));
 
+            //WHEN & THEN
+            assertThrows(SensorTypeAlreadyExistsException.class, () -> {
+                underTest.createSensorSummary(sensorDTO);
+            });
+
+
+    }
     @Test
     void updateSensorSummary() {
         //GIVEN

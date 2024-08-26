@@ -98,9 +98,13 @@ public class PlantServiceImpl implements PlantService {
     public List<SensorSummaryDTO> sensorSummaryListToSensorSummaryDTOList(List<SensorSummary> sensorSummaryList) {
 
         List<SensorSummaryDTO>sensorSummaryDTOList = new ArrayList<>();
-        for (SensorSummary sensorSummary:sensorSummaryList) {
-            sensorSummaryDTOList.add(sensorSummaryToSensorSummaryDTO(sensorSummary));
+        if(sensorSummaryList != null){
+            for (SensorSummary sensorSummary:sensorSummaryList) {
+                sensorSummaryDTOList.add(sensorSummaryToSensorSummaryDTO(sensorSummary));
+            }
+            return sensorSummaryDTOList;
         }
+
         return sensorSummaryDTOList;
     }
     public SensorSummaryDTO sensorSummaryToSensorSummaryDTO(SensorSummary sensorSummary) {

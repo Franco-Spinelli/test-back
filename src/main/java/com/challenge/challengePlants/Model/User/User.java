@@ -31,8 +31,6 @@ public class User implements UserDetails {
     private  String lastname;
     @Enumerated(EnumType.STRING)
     private  Role role;
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<Plant> plants;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority((role.name())));

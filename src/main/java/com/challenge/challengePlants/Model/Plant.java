@@ -24,8 +24,7 @@ public class Plant {
 
     private String country;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "plant_id")
+    @OneToMany(mappedBy = "plant",cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<SensorSummary> sensorSummaries;
 
     @ManyToOne

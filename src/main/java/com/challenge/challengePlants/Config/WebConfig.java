@@ -9,12 +9,12 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/api/**")
-                .allowedOrigins("http://localhost:4200/")
+                .allowedOrigins("https://test-front-six-sigma.vercel.app/")
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
                 .allowedHeaders("*")
                 .allowCredentials(true);
         registry.addMapping("/auth/**")
-                .allowedOrigins("http://localhost:4200/")
+                .allowedOrigins("https://test-front-six-sigma.vercel.app/")
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
                 .allowedHeaders("*")
                 .allowCredentials(true);

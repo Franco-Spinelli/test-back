@@ -31,7 +31,7 @@ public class SensorSummary {
 
     private Integer disabledSensors;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "plant_id", nullable = false)
     private Plant plant;
 
